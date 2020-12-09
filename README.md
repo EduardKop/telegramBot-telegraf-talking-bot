@@ -4,10 +4,12 @@
 a bot for communication, copies sms of channel users, sends text, video, photos, links and more by triggers, updates will be
 
 ## Introduction  
+
 the earliest stage of the bot, beta version, there will be updates 
 
 
-##Usage
+## Usage
+
 we return randomly SMS users<br>*in the future there will be an update with smart sampling*
 ```javascript
 const returnArray = [];
@@ -48,6 +50,6 @@ let activityNumber = 5,
 
 ```
 
-##Contact me
+## Contact me
 
 You can contact me [Telegram](https://telegram.me/Eduard_Kop)
