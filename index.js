@@ -28,7 +28,38 @@ const greetingsBot = ["Привет", "Как дела ?", "how are you", 'hi', 
 const greetingsUserRefEx = /(?:привет|(?:здравствуй(?:те)?)|(?:Здаров(?:а)?)|(?:привіт?)|(?:как дела?)|(?:як дела?)|(?:доброго дня)|(?:йо(?:у)?)|(?:hi)|(?:приветули)|(?:хай))/i,
       nameBotVadim = /(?:Вадим|(?:Вадюха?)|(?:Вадик?)|(?:Водим?)|(?:@vaduha_bot?)|(?:Вадик)|(?:Вадім))/i,
       botVadim = /(?:бот|(?:боти?)|(?:ботів?)|(?:ботами?)|(?:людина?)|(?:человек?))/i;
-      
+
+const returnArray = [];
+
+let activityNumber = 5,
+    activityNumberPercent = 100;
+    bot.hears("увеличь активность", ctx => {
+      activityNumber = activityNumber - 1;
+      activityNumberPercent = activityNumberPercent + 20
+      ctx.reply(`я буду писать больше, спасибо ${activityNumberPercent} %`);
+    });
+    bot.hears("уменьши активность", ctx => {
+      activityNumber = activityNumber + 3;
+      activityNumberPercent = activityNumberPercent - 20;
+      ctx.reply(`я буду меньше писать, спасибо ${activityNumberPercent} %`);
+    
+    });
+    bot.hears("какая активность?", ctx => {
+      ctx.reply(`моя активность ${activityNumberPercent}`);
+    });
+
+bot.use(async (ctx, next) => { 
+  await next();
+  if (ctx.message.text !== undefined) {
+    returnArray.push(ctx.message.text)
+  if (returnArray.length % activityNumber == 0) {
+      ctx.reply(randomGreetings(returnArray))
+    }
+  else if (returnArray.length >= 10000) {
+      returnArray.length = 0;
+    }
+  }
+});
 
 
 
