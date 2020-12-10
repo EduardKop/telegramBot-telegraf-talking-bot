@@ -1,5 +1,8 @@
 const { Telegraf} = require('telegraf');
 const config = require('./config');
+const randomPhoto = 'https://picsum.photos/200/300/?random';
+const returnArray = [];
+
 
 const bot = new Telegraf(config.telegraf_token, {
   username: '@vaduha_bot'
@@ -25,11 +28,31 @@ const greetingsBot = ["Привет", "Как дела ?", "how are you", 'hi', 
       nameBotVadimAnswer = ["да,єто я Вадим)", "меня так зовут, что хотел?)", "да, слушаю, как дела ?)"];
 
 //triggers for bot
+
 const greetingsUserRefEx = /(?:привет|(?:здравствуй(?:те)?)|(?:Здаров(?:а)?)|(?:привіт?)|(?:как дела?)|(?:як дела?)|(?:доброго дня)|(?:йо(?:у)?)|(?:hi)|(?:приветули)|(?:хай))/i,
       nameBotVadim = /(?:Вадим|(?:Вадюха?)|(?:Вадик?)|(?:Водим?)|(?:@vaduha_bot?)|(?:Вадик)|(?:Вадім))/i,
-      botVadim = /(?:бот|(?:боти?)|(?:ботів?)|(?:ботами?)|(?:людина?)|(?:человек?))/i;
+      botVadim = /(?:бот|(?:боти?)|(?:ботів?)|(?:ботами?)|(?:людина?)|(?:человек?))/i,
+      greetingsUser = ["Привет", "Здаров", "как дела?", "пріветулі", "привіт", "здарова", "хай"],
+      randomStringPhoto = /(?:фото|(?:ого?)|(?:картина?)|(?:картинка?)|(?:красота?))/i;
+//random photo
+bot.hears(randomStringPhoto, ({ 
+  replyWithPhoto
+}) => replyWithPhoto({
+  url: randomPhoto
+}));
+bot.hears('+', ({
+  replyWithPhoto
+}) => replyWithPhoto({
+  url: randomPhoto
+}));
 
-const returnArray = [];
+//addressing a bot by nickname 
+greetingsUser.forEach((e) => { 
+  let botNameGreetings = "@vaduha_bot " + e || "@vaduha_bot";
+  bot.hears(botNameGreetings, async ctx => {
+    await ctx.reply(randomGreetings(greetingsBot));
+  });
+});
 
 let activityNumber = 5,
     activityNumberPercent = 100;
