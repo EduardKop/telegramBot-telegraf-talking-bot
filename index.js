@@ -84,7 +84,30 @@ bot.use(async (ctx, next) => {
   }
 });
 
-
+const getReplyToMessageId = ctx => (
+  ctx.message.reply_to_message ? ctx.message.reply_to_message.message_id : null
+)
+const sendReply = (ctx, reply) => {
+  let replyMethod = {
+    sticker: ctx.replyWithSticker,
+    text: ctx.reply,
+    gif: ctx.replyWithDocument
+  } [reply.type];
+  replyMethod(reply.id, {
+    reply_to_message_id: getReplyToMessageId(ctx)
+  })
+};
+bot.command('list', ctx => {
+  ctx.reply(
+    'Available triggers:\n\n' +
+    Object.keys(replies).join('\n')
+  )
+});
+bot.on('text', ctx => {
+  let cmd = ctx.message.text.toLowerCase()
+  if (cmd in replies)
+    sendReply(ctx, replies[cmd]);
+});
 
 bot.start((ctx) => ctx.reply('Привет, меня зовут Вадим'));
 bot.help((ctx) => ctx.reply('я могу общаться, просто пиши мне побольше)'));
