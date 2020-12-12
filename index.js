@@ -32,8 +32,9 @@ const greetingsBot = ["Привет", "Как дела ?", "how are you", 'hi', 
 const greetingsUserRefEx = /(?:привет|(?:здравствуй(?:те)?)|(?:Здаров(?:а)?)|(?:привіт?)|(?:как дела?)|(?:як дела?)|(?:доброго дня)|(?:йо(?:у)?)|(?:hi)|(?:приветули)|(?:хай))/i,
       nameBotVadim = /(?:Вадим|(?:Вадюха?)|(?:Вадик?)|(?:Водим?)|(?:@vaduha_bot?)|(?:Вадик)|(?:Вадім))/i,
       botVadim = /(?:бот|(?:боти?)|(?:ботів?)|(?:ботами?)|(?:людина?)|(?:человек?))/i,
-      greetingsUser = ["Привет", "Здаров", "как дела?", "пріветулі", "привіт", "здарова", "хай"],
-      randomStringPhoto = /(?:фото|(?:ого?)|(?:картина?)|(?:картинка?)|(?:красота?))/i;
+      randomStringPhoto = /(?:фото|(?:ого?)|(?:картина?)|(?:картинка?)|(?:красота?))/i,
+      questionUserRefEx = ["хороший вопрос", "что за вопросы?", "кажеться у меня есть ответ", "раньше я знал ответ", "задай мне позже этот вопрос"],
+      greetingsUser = ["Привет", "Здаров", "как дела?", "пріветулі", "привіт", "здарова", "хай"];
 //random photo
 bot.hears(randomStringPhoto, ({ 
   replyWithPhoto
@@ -104,10 +105,26 @@ bot.command('list', ctx => {
   )
 });
 bot.on('text', ctx => {
-  let cmd = ctx.message.text.toLowerCase()
+  let cmd = ctx.message.text.toLowerCase();
   if (cmd in replies)
     sendReply(ctx, replies[cmd]);
 });
+bot.hears(/поверни (.+)/, ({ 
+  match,
+  reply
+}) => reply(match[1].split('').reverse().join('')));
+
+bot.hears("?", async ctx => {
+  await
+  ctx.reply(randomGreetings(questionUserRefEx));
+});
+
+bot.hears(laughUser, async ctx => {
+  await
+  ctx.reply("ахахах,смешно");
+});
+
+
 
 bot.start((ctx) => ctx.reply('Привет, меня зовут Вадим'));
 bot.help((ctx) => ctx.reply('я могу общаться, просто пиши мне побольше)'));
