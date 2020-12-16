@@ -12,17 +12,17 @@ the earliest stage of the bot, beta version, there will be updates
 
 we return randomly SMS users<br>*in the future there will be an update with smart sampling*
 ```javascript
-const returnArray = [];
+const returnArray = []; //empty arr
 
 bot.use(async (ctx, next) => { 
   await next();
-  if (ctx.message.text !== undefined) {
-    returnArray.push(ctx.message.text)
+  if (ctx.message.text !== undefined) { 
+    returnArray.push(ctx.message.text) //write all SMS in the chat into an array
   if (returnArray.length % activityNumber == 0) {
-      ctx.reply(randomGreetings(returnArray))
+      ctx.reply(randomGreetings(returnArray))//return the word randomly from the array
     }
   else if (returnArray.length >= 10000) {
-      returnArray.length = 0;
+      returnArray.length = 0;//clearing the array
     }
   }
 });
