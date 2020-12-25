@@ -1,8 +1,10 @@
-const { Telegraf} = require('telegraf');
+const {
+  Telegraf
+} = require('telegraf');
 const config = require('./config');
 const randomPhoto = 'https://picsum.photos/200/300/?random';
 const returnArray = [];
-
+const replies = require('./replies');
 
 const bot = new Telegraf(config.telegraf_token, {
   username: '@vaduha_bot'
@@ -23,21 +25,22 @@ function randomGreetings(arr) {
 
 //bot responses
 const greetingsBot = ["Привет", "Как дела ?", "how are you", 'hi', 'hello', 'Доброго дня'],
-      botVadimSaysBot = ["я не бот )", "кто тут бот?", "почему меня называют ботом", "мне обидно"],
-      stickerUserRefEx = ["класный стикер", "ахахаха", "круто", "давай еще)"],
-      nameBotVadimAnswer = ["да,єто я Вадим)", "меня так зовут, что хотел?)", "да, слушаю, как дела ?)"],
-      questionUserRefEx = ["хороший вопрос", "что за вопросы?", "кажеться у меня есть ответ", "раньше я знал ответ", "задай мне позже этот вопрос"],
-      greetingsUser = ["Привет", "Здаров", "как дела?", "пріветулі", "привіт", "здарова", "хай"];
+  botVadimSaysBot = ["я не бот )", "кто тут бот?", "почему меня называют ботом", "мне обидно"],
+  stickerUserRefEx = ["класный стикер", "ахахаха", "круто", "давай еще)"],
+  nameBotVadimAnswer = ["да,єто я Вадим)", "меня так зовут, что хотел?)", "да, слушаю, как дела ?)"],
+  questionUserRefEx = ["хороший вопрос", "что за вопросы?", "кажеться у меня есть ответ", "раньше я знал ответ", "задай мне позже этот вопрос"],
+  greetingsUser = ["Привет", "Здаров", "как дела?", "пріветулі", "привіт", "здарова", "хай"],
+  hystoryStart = ["вот история", "слушайте историю", "начнем с ..", "ладно, розкажу) "];
 //triggers for bot
 
 const greetingsUserRefEx = /(?:привет|(?:здравствуй(?:те)?)|(?:Здаров(?:а)?)|(?:привіт?)|(?:как дела?)|(?:як дела?)|(?:доброго дня)|(?:йо(?:у)?)|(?:hi)|(?:приветули)|(?:хай))/i,
-      nameBotVadim = /(?:Вадим|(?:Вадюха?)|(?:Вадик?)|(?:Водим?)|(?:@vaduha_bot?)|(?:Вадик)|(?:Вадім))/i,
-      botVadim = /(?:бот|(?:боти?)|(?:ботів?)|(?:ботами?)|(?:людина?)|(?:человек?))/i,
-      randomStringPhoto = /(?:фото|(?:ого?)|(?:картина?)|(?:картинка?)|(?:красота?))/i,
-      laughUser = /(?:аха|(?:ахах?)|(?:ахаха?)|(?:ахахаха?)|(?:ахахахаха?)|(?:ахахахахахаха?))/i;
-     
+  nameBotVadim = /(?:Вадим|(?:Вадюха?)|(?:Вадик?)|(?:Водим?)|(?:@vaduha_bot?)|(?:Вадик)|(?:Вадім))/i,
+  botVadim = /(?:бот|(?:боти?)|(?:ботів?)|(?:ботами?)|(?:людина?)|(?:человек?))/i,
+  randomStringPhoto = /(?:фото|(?:ого?)|(?:картина?)|(?:картинка?)|(?:красота?))/i,
+  laughUser = /(?:аха|(?:ахах?)|(?:ахаха?)|(?:ахахаха?)|(?:ахахахаха?)|(?:ахахахахахаха?))/i;
+
 //random photo
-bot.hears(randomStringPhoto, ({ 
+bot.hears(randomStringPhoto, ({
   replyWithPhoto
 }) => replyWithPhoto({
   url: randomPhoto
@@ -49,7 +52,7 @@ bot.hears('+', ({
 }));
 
 //addressing a bot by nickname 
-greetingsUser.forEach((e) => { 
+greetingsUser.forEach((e) => {
   let botNameGreetings = "@vaduha_bot " + e || "@vaduha_bot";
   bot.hears(botNameGreetings, async ctx => {
     await ctx.reply(randomGreetings(greetingsBot));
@@ -57,30 +60,29 @@ greetingsUser.forEach((e) => {
 });
 
 let activityNumber = 5,
-    activityNumberPercent = 100;
-    bot.hears("увеличь активность", ctx => {
-      activityNumber = activityNumber - 1;
-      activityNumberPercent = activityNumberPercent + 20
-      ctx.reply(`я буду писать больше, спасибо ${activityNumberPercent} %`);
-    });
-    bot.hears("уменьши активность", ctx => {
-      activityNumber = activityNumber + 3;
-      activityNumberPercent = activityNumberPercent - 20;
-      ctx.reply(`я буду меньше писать, спасибо ${activityNumberPercent} %`);
-    
-    });
-    bot.hears("какая активность?", ctx => {
-      ctx.reply(`моя активность ${activityNumberPercent}`);
-    });
+  activityNumberPercent = 100;
+bot.hears("увеличь активность", ctx => {
+  activityNumber = activityNumber - 1;
+  activityNumberPercent = activityNumberPercent + 20
+  ctx.reply(`я буду писать больше, спасибо ${activityNumberPercent} %`);
+});
+bot.hears("уменьши активность", ctx => {
+  activityNumber = activityNumber + 3;
+  activityNumberPercent = activityNumberPercent - 20;
+  ctx.reply(`я буду меньше писать, спасибо ${activityNumberPercent} %`);
 
-bot.use(async (ctx, next) => { 
+});
+bot.hears("какая активность?", ctx => {
+  ctx.reply(`моя активность ${activityNumberPercent}`);
+});
+
+bot.use(async (ctx, next) => {
   await next();
   if (ctx.message.text !== undefined) {
     returnArray.push(ctx.message.text)
-  if (returnArray.length % activityNumber == 0) {
+    if (returnArray.length % activityNumber == 0) {
       ctx.reply(randomGreetings(returnArray))
-    }
-  else if (returnArray.length >= 10000) {
+    } else if (returnArray.length >= 10000) {
       returnArray.length = 0;
     }
   }
@@ -110,7 +112,7 @@ bot.on('text', ctx => {
   if (cmd in replies)
     sendReply(ctx, replies[cmd]);
 });
-bot.hears(/поверни (.+)/, ({ 
+bot.hears(/поверни (.+)/, ({
   match,
   reply
 }) => reply(match[1].split('').reverse().join('')));
@@ -126,6 +128,29 @@ bot.hears(laughUser, async ctx => {
 });
 
 
+
+//storytelling
+let hystoryString = '';
+
+function hystory(arr) {
+  arr.sort(() => Math.random() - 0.5);
+  arr.forEach((e) => {
+    hystoryString = `${hystoryString} ${e}`;
+    return hystoryString
+  });
+  if (hystoryString) {
+    let sliced = hystoryString.slice(0, 700);
+    if (sliced.length < hystoryString.length) {
+      return (sliced += '...');
+    } else {
+      return (`${randomGreetings(hystoryStart)} ${sliced}`)
+    }
+  }
+}
+bot.hears("история", async ctx => {
+  await
+  ctx.reply(hystory(returnArray));
+});
 
 bot.start((ctx) => ctx.reply('Привет, меня зовут Вадим'));
 bot.help((ctx) => ctx.reply('я могу общаться, просто пиши мне побольше)'));

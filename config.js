@@ -1,2 +1,3 @@
-module.exports = {telegraf_token:'---',};
-
+module.exports = {
+   telegraf_token: '--',
+};
