@@ -59,6 +59,15 @@ greetingsUser.forEach((e) => {
   });
 });
 
+
+//тригеры на которые переверяем
+let triggerHello = ["hi", "hello", "wats up"];
+let triggerSwear = ["fuck", "cunt", "bitch"];
+//тригеры которые возвращаем
+let returnTrigerHello = ["yep", "hi", "hi bro"];
+let returnTriggerSwear = ["no", "shut up", "pls,no"];
+
+
 let activityNumber = 5,
   activityNumberPercent = 100;
 bot.hears("увеличь активность", ctx => {
@@ -80,6 +89,20 @@ bot.use(async (ctx, next) => {
   await next();
   if (ctx.message.text !== undefined) {
     returnArray.push(ctx.message.text)
+    returnArray.forEach((e) => {
+      triggerHello.forEach((i) => {
+        if (e == i) {
+          ctx.reply(randomGreetings(returnTrigerHello));
+          returnArray.length = 0;
+        }
+      })
+      triggerSwear.forEach((y) => {
+        if (e == y) {
+          ctx.reply(randomGreetings(returnTriggerSwear));
+          returnArray.length = 0;
+        }
+      })
+    })
     if (returnArray.length % activityNumber == 0) {
       ctx.reply(randomGreetings(returnArray))
     } else if (returnArray.length >= 10000) {
