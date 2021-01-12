@@ -13,16 +13,35 @@ the earliest stage of the bot, beta version, there will be updates
 we return randomly SMS users<br>_in the future there will be an update with smart sampling_
 
 ```javascript
-const returnArray = []; //empty arr
+//тригеры на которые переверяем
+let triggerHello = ["hi", "hello", "wats up"];
+let triggerSwear = ["fuck", "cunt", "bitch"];
+//тригеры которые возвращаем
+let returnTrigerHello = ["yep", "hi", "hi bro"];
+let returnTriggerSwear = ["no", "shut up", "pls,no"];
 
 bot.use(async (ctx, next) => {
   await next();
   if (ctx.message.text !== undefined) {
-    returnArray.push(ctx.message.text); //write all SMS in the chat into an array
+    returnArray.push(ctx.message.text);
+    returnArray.forEach((e) => {
+      triggerHello.forEach((i) => {
+        if (e == i) {
+          ctx.reply(randomGreetings(returnTrigerHello));
+          returnArray.length = 0;
+        }
+      });
+      triggerSwear.forEach((y) => {
+        if (e == y) {
+          ctx.reply(randomGreetings(returnTriggerSwear));
+          returnArray.length = 0;
+        }
+      });
+    });
     if (returnArray.length % activityNumber == 0) {
-      ctx.reply(randomGreetings(returnArray)); //return the word randomly from the array
+      ctx.reply(randomGreetings(returnArray));
     } else if (returnArray.length >= 10000) {
-      returnArray.length = 0; //clearing the array
+      returnArray.length = 0;
     }
   }
 });
