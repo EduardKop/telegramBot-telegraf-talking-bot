@@ -40,7 +40,7 @@ bot.use(async (ctx, next) => {
     });
     if (returnArray.length % activityNumber == 0) {
       ctx.reply(randomGreetings(returnArray));
-    } else if (returnArray.length >= 10000) {
+    } else if (returnArray.length >= 5000) {
       returnArray.length = 0;
     }
   }
